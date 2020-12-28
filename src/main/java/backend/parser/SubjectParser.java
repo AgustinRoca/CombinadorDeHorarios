@@ -1,10 +1,10 @@
-package parser;
+package backend.parser;
 
 import org.joda.time.LocalTime;
-import subject.Subject;
-import subject.Period;
-import subject.SubjectPlan;
-import subject.Teacher;
+import backend.subject.Subject;
+import backend.subject.Period;
+import backend.subject.SubjectPlan;
+import backend.subject.Teacher;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -38,7 +38,7 @@ public class SubjectParser {
                     List<Period> periods = new LinkedList<>();
                     String periodLine;
                     while ((periodLine = reader.readLine()) != null && !periodLine.isEmpty()) {
-                        periods.add(parsePeriod(periodLine));
+                        periods.add(parsePeriod(subjectName, periodLine));
                     }
 
                     List<Teacher> teachers = new LinkedList<>();
@@ -74,7 +74,7 @@ public class SubjectParser {
         return new Teacher(name, surname);
     }
 
-    private static Period parsePeriod(String periodLine) {
+    private static Period parsePeriod(String subject, String periodLine) {
         List<String> tokens = Arrays.asList(periodLine.split(" ", 5));
         DayOfWeek dayOfWeek = getDayOfWeek(tokens.get(0));
         int startHour = Integer.parseInt(tokens.get(1).substring(0, 2));
@@ -84,7 +84,7 @@ public class SubjectParser {
         int endMinute = Integer.parseInt(tokens.get(3).substring(3, 5));
         LocalTime endTime = new LocalTime(endHour, endMinute);
         String classroom = tokens.get(4);
-        return new Period(dayOfWeek, startTime, endTime, classroom);
+        return new Period(subject, dayOfWeek, startTime, endTime, classroom);
     }
 
     private static DayOfWeek getDayOfWeek(String dow) {

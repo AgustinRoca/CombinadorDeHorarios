@@ -1,7 +1,7 @@
-package scheduler;
+package backend.scheduler;
 
-import subject.Period;
-import subject.TimeInterval;
+import backend.subject.Period;
+import backend.subject.TimeInterval;
 
 import java.util.LinkedList;
 import java.util.List;

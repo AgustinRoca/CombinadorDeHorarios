@@ -1,4 +1,4 @@
-package subject;
+package backend.subject;
 
 public class Teacher {
     private final String name;

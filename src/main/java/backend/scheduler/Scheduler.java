@@ -1,14 +1,14 @@
-package scheduler;
+package backend.scheduler;
 
-import parser.SubjectParser;
-import subject.Subject;
-import subject.SubjectPlan;
+import backend.parser.SubjectParser;
+import backend.subject.Subject;
+import backend.subject.SubjectPlan;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Scheduler {
-    public static void main(String[] args) {
+    public static List<WeekSchedule> schedule() {
         List<Subject> subjects = SubjectParser.parse("src/main/resources/subjects.txt");
         List<WeekSchedule> weekSchedules = new ArrayList<>();
         weekSchedules.add(new WeekSchedule());
@@ -28,5 +28,6 @@ public class Scheduler {
                 }
             }
         }
+        return weekSchedules;
     }
 }

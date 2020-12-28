@@ -1,8 +1,8 @@
-package scheduler;
+package backend.scheduler;
 
-import subject.Subject;
-import subject.SubjectPlan;
-import subject.Period;
+import backend.subject.Subject;
+import backend.subject.SubjectPlan;
+import backend.subject.Period;
 
 import java.time.DayOfWeek;
 import java.util.HashMap;

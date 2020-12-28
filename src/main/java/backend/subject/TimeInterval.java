@@ -1,4 +1,4 @@
-package subject;
+package backend.subject;
 
 import org.joda.time.LocalTime;
 
