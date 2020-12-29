@@ -27,8 +27,6 @@ public class WeekSchedule {
 
     public boolean addIfCan(Subject subject, SubjectPlan subjectPlan){
         for (Period period: subjectPlan.getPeriods()) {
-            if(subject.getName().equals("Física III")){
-            }
             if(!weekSchedule.get(period.getDayOfWeek()).canAdd(period.getTimeInterval())){
                 return false;
             }

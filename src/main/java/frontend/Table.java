@@ -5,12 +5,14 @@ import backend.scheduler.WeekSchedule;
 import backend.subject.Period;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.time.DayOfWeek;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class Table extends JFrame {
     private static final int START_TIME = 8;
@@ -40,11 +42,13 @@ public class Table extends JFrame {
             header.setBackground(Color.blue);
             header.setForeground(Color.white);
             for (int i =0; i<columns.length; i++) {
-                table.setDefaultRenderer(table.getColumnClass(i), new ScheduleCellRenderer());
+                table.setDefaultRenderer(table.getColumnClass(i), new TextAreaRenderer());
             }
 
             //add the table to the frame
-            this.add(new JScrollPane(table));
+            JScrollPane scrollPane = new JScrollPane(table);
+            scrollPane.setPreferredSize(new Dimension(1000, 500));
+            this.add(scrollPane);
 
             this.setTitle("Horarios " + tablenumber);
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,9 +73,7 @@ public class Table extends JFrame {
             for (DayOfWeek day : DayOfWeek.values()) {
                 for (Period period : schedule.getWeekSchedule().get(day).getPeriods()) {
                     for (int i = period.getTimeInterval().getFrom().getHourOfDay() - START_TIME; i < period.getTimeInterval().getTo().getHourOfDay() - START_TIME; i++) {
-                        String name = period.getSubjectName().replace(' ', '\n');
-                        System.out.println(name);
-                        tableData[i][day.getValue()] = name;
+                        tableData[i][day.getValue()] = period.getSubjectName();
                     }
                 }
             }
@@ -85,20 +87,40 @@ public class Table extends JFrame {
         SwingUtilities.invokeLater(() -> new Table(Scheduler.schedule()));
     }
 
-    static class ScheduleCellRenderer extends DefaultTableCellRenderer {
-        public Component getTableCellRendererComponent(
-                JTable table, Object value, boolean isSelected,
-                boolean hasFocus, int row, int column)
-        {
-            if ((row % 2) == 0) {
-                setBackground(Color.white);
-            }
-            else {
-                setBackground(Color.lightGray);
-            }
+    static class TextAreaRenderer implements TableCellRenderer {
+        private JTextArea renderer;
+        private final Color evenColor = new Color(252, 248, 202);
+        Map<Integer, Integer> biggestCellPerRow = new HashMap<>(); // row -> column
 
-            return super.getTableCellRendererComponent(table, value, isSelected,
-                    hasFocus, row, column);
+        public TextAreaRenderer() {
+            renderer = new JTextArea();
+            renderer.setLineWrap(true);
+            renderer.setWrapStyleWord(true);
+            renderer.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+            for (int i = 0; i < END_TIME - START_TIME; i++) {
+                biggestCellPerRow.put(i, 0);
+            }
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (isSelected) {
+                renderer.setForeground(table.getSelectionForeground());
+                renderer.setBackground(table.getSelectionBackground());
+            } else {
+                renderer.setForeground(table.getForeground());
+                renderer.setBackground((row % 2 == 0) ? evenColor : table.getBackground());
+            }
+            renderer.setFont(table.getFont());
+            renderer.setText((value == null) ? "" : value.toString());
+            JPanel contentPane = new JPanel(new BorderLayout());
+            contentPane.setSize(table.getColumnModel().getColumn(column).getWidth(), renderer.getPreferredSize().height);
+            if((table.getRowHeight(row) < renderer.getPreferredSize().height) || (biggestCellPerRow.get(row) == column)) {
+                table.setRowHeight(row, renderer.getPreferredSize().height);
+                biggestCellPerRow.put(row, column);
+            }
+            contentPane.add(renderer);
+            return contentPane;
         }
     }
 }
