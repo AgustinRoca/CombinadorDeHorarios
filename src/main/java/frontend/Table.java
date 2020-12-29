@@ -72,7 +72,9 @@ public class Table extends JFrame {
 
             for (DayOfWeek day : DayOfWeek.values()) {
                 for (Period period : schedule.getWeekSchedule().get(day).getPeriods()) {
-                    for (int i = period.getTimeInterval().getFrom().getHourOfDay() - START_TIME; i < period.getTimeInterval().getTo().getHourOfDay() - START_TIME; i++) {
+                    for (int i = period.getTimeInterval().getFrom().getHourOfDay() - START_TIME;
+                         i < period.getTimeInterval().getTo().getHourOfDay() - START_TIME; i++) {
+
                         tableData[i][day.getValue()] = period.getSubjectName();
                     }
                 }
@@ -88,7 +90,7 @@ public class Table extends JFrame {
     }
 
     static class TextAreaRenderer implements TableCellRenderer {
-        private JTextArea renderer;
+        private final JTextArea renderer;
         private final Color evenColor = new Color(252, 248, 202);
         Map<Integer, Integer> biggestCellPerRow = new HashMap<>(); // row -> column
 
@@ -103,7 +105,8 @@ public class Table extends JFrame {
         }
 
         @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column) {
             if (isSelected) {
                 renderer.setForeground(table.getSelectionForeground());
                 renderer.setBackground(table.getSelectionBackground());
